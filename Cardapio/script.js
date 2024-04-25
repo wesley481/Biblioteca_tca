@@ -19,6 +19,10 @@ const addressInput = document.getElementById("address")
 
 const addressWarn = document.getElementById("address-warn")
 
+const removeProductButtons=document.getElementsByClassName("remove-product-button")
+
+
+
 cartBtn.addEventListener("click", function() {
     cartModal.style.display = "flex"
 })
@@ -45,3 +49,24 @@ menu.addEventListener("click", function(event){
     console.log(price)
   }
 })
+console.log(removeProductButtons)
+for (var i = 0; i < removeProductButtons.length; i++){
+  removeProductButtons[i].addEventListener("click", function(event){
+    event.target.parentElement.parentElement.remove()
+
+   
+  })
+
+  let totalAmount = 0
+  const cartProducts = document.getElementsByClassName("cardt-product")
+  for(var i = 0; i <cartProducts.length; i++){
+    console.log(cartProducts[i])
+    const productPrice = cartProducts[i].getElementsByClassName("card-product-price")[0].innerText.replece("R$", "").replece(",",".")
+    const productQuantity = cartProducts[i].getElementsByClassName("product-qtd-input")[0].value
+    console.log(productPrice)
+     
+    totalAmount += (productPrice * productQuantity)
+
+  }
+  document.querySelector(".cart-total-container span").innerText ="R$" + totalAmount
+}
