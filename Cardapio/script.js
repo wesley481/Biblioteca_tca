@@ -1,72 +1,79 @@
+const menu = document.getElementById("menu");
+const cartBtn = document.getElementById("cart-btn");
+const cartModal = document.getElementById("cart-modal");
+const cartItemsContainer = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+const checkoutBtn = document.getElementById("checkout-btn");
+const closeModalBtn = document.getElementById("close-modal-btn");
+const cartCounter = document.getElementById("cart-count");
+const addressInput = document.getElementById("address");
+const addressWarn = document.getElementById("address-warn");
+const price = document.getElementById("price");
 
-const menu = document.getElementById("menu")
-
-const cartBtn = document.getElementById("cart-btn")
-
-const cartModal = document.getElementById("cart-modal")
-
-const cartItemsContainer = document.getElementById("cart-items")
-
-const cartTotal = document.getElementById("cart-total")
-
-const checkoutBtn = document.getElementById("checkout-btn")
-
-const closeModalBtn = document.getElementById("close-modal-btn")
-
-const cartCounter = document.getElementById("cart-count")
-
-const addressInput = document.getElementById("address")
-
-const addressWarn = document.getElementById("address-warn")
-
-const removeProductButtons=document.getElementsByClassName("remove-product-button")
-
-
+let cart = [];
 
 cartBtn.addEventListener("click", function() {
-    cartModal.style.display = "flex"
-})
+    cartModal.style.display = "flex";
+});
 
 cartModal.addEventListener("click", function(event) {
     if(event.target === cartModal){
-        cartModal.style.display = "none"
+        cartModal.style.display = "none";
     }
-})
+});
 
 closeModalBtn.addEventListener("click", function(){
-     cartModal.style.display = "none"
-})
+     cartModal.style.display = "none";
+});
 
 menu.addEventListener("click", function(event){
-  //  console.log(event.target)
+    let parentButton = event.target.closest(".add-to-cart-btn");
+    if(parentButton){
+        const name = parentButton.getAttribute("data-name");
+        const price = parseFloat(parentButton.getAttribute("data-price")); // Correção aqui
+        addToCart(name, price);
+    }
+});
 
-  let parentButton = event.target.closest(".add-to-cart-btn")
-  if(parentButton){
-    const name = parentButton.getAttribute("data-name")
-    const price = parentButton.getAttribute("data-price")
+// Função para adicionar no carrinho
+function addToCart(name, price){
+    const existingItem = cart.find(item => item.name === name);
 
-    console.log(name)
-    console.log(price)
-  }
-})
-console.log(removeProductButtons)
-for (var i = 0; i < removeProductButtons.length; i++){
-  removeProductButtons[i].addEventListener("click", function(event){
-    event.target.parentElement.parentElement.remove()
+    if(existingItem){
+        // Se o item já existe, aumenta apenas a quantidade em 1
+        existingItem.quantity += 1;
+    } else {
+        cart.push({
+            name,
+            price,
+            quantity: 1,
+        });
+    }
+  
+    updateCartModal(); // Correção aqui
+}
 
-   
-  })
+// Função para atualizar o modal do carrinho
+function updateCartModal(){
+    cartItemsContainer.innerHTML = "";
+    let total = 0;
 
-  let totalAmount = 0
-  const cartProducts = document.getElementsByClassName("cardt-product")
-  for(var i = 0; i <cartProducts.length; i++){
-    console.log(cartProducts[i])
-    const productPrice = cartProducts[i].getElementsByClassName("card-product-price")[0].innerText.replece("R$", "").replece(",",".")
-    const productQuantity = cartProducts[i].getElementsByClassName("product-qtd-input")[0].value
-    console.log(productPrice)
-     
-    totalAmount += (productPrice * productQuantity)
+    cart.forEach(item => {
+        const cartItemElement = document.createElement("div");
 
-  }
-  document.querySelector(".cart-total-container span").innerText ="R$" + totalAmount
+        cartItemElement.innerHTML = `
+            <div>
+                <div>
+                    <p>${item.name}</p>
+                    <p>${item.quantity}</p>
+                    <p>R$ ${item.price}</p> <!-- Correção aqui -->
+                </div>
+                <div>
+                    <button>Remover</button>
+                </div>
+            </div>
+        `;
+
+        cartItemsContainer.appendChild(cartItemElement);
+    });
 }
