@@ -90,23 +90,33 @@ function updateCartModal() {
 // Função para remover item do carrinho 
 cartItemsContainer.addEventListener("click", function (event) {
     if (event.target.classList.contains("remove-from-cart-btn")) {
-        const name = event.target.getAttribute("data-name");
-        removeFromCart(name);
-    }
-});
+        const name = event.target.getAttribute("data-name")
 
-function removeFromCart(name) {
-    cart = cart.filter(item => item.name !== name);
+        removeItemCart(name);
+    }
+})
+
+function removeItemCart(name){
+    const index = cart.findIndex(item => item.name == name);
+
+    if(index !== -  1){
+        const item = cart[index];
+       
+        if(item.quantity > 1){
+            item.quantity -= 1;
+            updateCartModal();
+            return;
+
+    }
+    cart.splice(index, 1);
     updateCartModal();
 }
+}
 
-// Optional: Handle checkout button click
-checkoutBtn.addEventListener("click", function () {
-    if (addressInput.value.trim() === "") {
-        addressWarn.classList.remove("hidden");
-    } else {
-        addressWarn.classList.add("hidden");
-        // Proceed with checkout logic
-        console.log("Proceeding to checkout with address:", addressInput.value);
-    }
-});
+addressInput.addEventListener("input", function(event){
+
+    let inputValue = event.target.value;
+
+    //
+})
+
